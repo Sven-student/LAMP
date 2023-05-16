@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LampBox Webshop</title>
+<style>
+body {
+background-color: dimgrey;
+}
+
+#header {
+background-color: #000000;
+color: white;
+text-align: center;
+}
+
+#container {
+background-color: darkgray;
+width: 800px;
+margin-left: auto;
+margin-right: auto;
+}
+
+#content {
+padding: 10px;
+}
+
+#nav {
+width: 180px;
+float: left;
+}
+
+#main {
+width: 600px;
+float: right;
+}
+
+#footer {
+clear: both;
+text-align: center;
+}
+
+#img {
+float: right;
+clear: both;
+}
+
+#img2 {
+float: left;
+clear: both;
+}
+
+#img3 {
+display: table;
+margin: 0 auto;
+}
+
+a {
+text-decoration: none;
+color: white;
+}
+
+#nav ul {
+list-style-type: none;
+padding: 0;
+}
+
+#video {
+float: left;
+}
+
+#logo {
+float: left;
+clear: both;
+}
+
+.hide {
+display: none;
+}
+
+.show {
+display: block;
+}
+</style>
+<script>
+  function showCloud() {
+    document.getElementById("onpremises_options").classList.add("hide");
+    document.getElementById("cloud_options").classList.remove("hide");
+    document.getElementById("environment_options").classList.remove("hide");
+  }
+
+  function showOnpremises() {
+    document.getElementById("cloud_options").classList.add("hide");
+    document.getElementById("onpremises_options").classList.remove("hide");
+    document.getElementById("environment_options").classList.remove("hide");
+  }
+
+  function showStandard() {
+    document.getElementById("environment_options").classList.add("hide");
+    document.getElementById("standard_options").classList.remove("hide");
+  }
+
+  function showDevelopment() {
+    document.getElementById("environment_options").classList.add("hide");
+    document.getElementById("development_options").classList.remove("hide");
+  }
+function submitForm() {
+  var location = document.querySelector('input[name="Location"]:checked').value;
+  var env;
+
+  if (location === "cloud") {
+    env = document.querySelector('input[name="cloudOptions"]:checked').value;
+    var pid = document.getElementById("pid").value;
+
+    var data = {
+      env: env,
+      pid: pid,
+      rmv: "no"
+    };
+
+    var jsonPayload = JSON.stringify(data);
+
+    fetch("https://lamp-linux-function-app-dev.azurewebsites.net/api/httptrigger", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: jsonPayload
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  } else if (location === "onpremises") {
+    alert("Starting Python command...");
+  }
+}
+</script>
+</head>
+<body>
+  <div id="header">
+    <h1>Welcome to the LampBox Webshop!</h1>
+    <h3>Select your desired LAMP-Stack environment!</h3>
+  </div>
+  <div id="container">
+  <div id="img">
+      <img src="Pictures/LAMP Box logo.png" height="120" width="">
+      </div>
+    <div id="main">
+      <div id="content">
+        <h2>Location:</h2>
+        <form action="https://lamp-linux-function-app-dev.azurewebsites.net/api/httptrigger" method="post"> 
+          <input type="radio" name="Location" id="cloud" value="cloud" onclick="showCloudOptions()">
+          <label for="cloud">Cloud</label>
+          <br>
+          <input type="radio" name="Location" id="onpremises" value="onpremises" onclick="showOnPremisesOptions()">
+          <label for="onpremises">On-Premises</label>
+          <br>
+          <div id="env" style="display: none;">
+              <h2>Cloud options:</h2>
+              <input type="radio" name="env" id="std" value="std">
+              <label for="std">Standard</label>
+              <br>
+              <input type="radio" name="env" id="dev" value="dev">
+              <label for="dev">Development</label>
+          </div>
+          <div id="onPremisesOptions" style="display: none;">
+              <h2>On-Premises options:</h2>
+              <input type="radio" name="onPremisesOptions" id="onPremisesStandard" value="onPremisesStandard">
+              <label for="onPremisesStandard">Standard</label>
+          </div>
+          <h2>Company Information:</h2>
+          <input type="text" name="company_name" id="company_name" placeholder="Enter company name" required="">
+        <input type="text" name="pid" id="pid" placeholder="Enter PID" required="">
+          <input type="submit" value="Purchase">
+        </form>
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright © 2023 
+        <a href="#">LampBox Webshop</a>
+      </p>
+    </div>
+  </div>
+  <script>
+    function showCloudOptions() {
+      document.getElementById("cloudOptions").style.display = "block";
+      document.getElementById("onPremisesOptions").style.display = "none";
+    }
+    function showOnPremisesOptions() {
+      document.getElementById("cloudOptions").style.display = "none";
+      document.getElementById("onPremisesOptions").style.display = "block";
+    }    
+    </script>
+</body>
+</body>
+</html>
